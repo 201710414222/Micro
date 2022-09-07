@@ -5,14 +5,16 @@
         "core": "*",
         "radio": "*",
         "microphone": "*",
-        "ws2812b": "github:microsoft/pxt-ws2812b#v0.1.2"
+        "ws2812b": "github:microsoft/pxt-ws2812b#v0.1.2",
+        "radio-broadcast": "*"
     },
     "files": [
         "main.blocks",
         "main.ts",
         "README.md",
         "Expansion_MP.ts",
-        "main.py"
+        "main.py",
+        "_locales/zh-CN/README.md"
     ],
     "testFiles": [
         "test.ts"

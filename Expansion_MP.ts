@@ -1,5 +1,13 @@
-
+enum YFPingUnit {
+    //% block="cm"
+    Centimeters,
+    //% block="μs"
+    MicroSeconds,
+    //% block="inches"
+    Inches
+}
 enum NeoPixelColors {
+
     //% block=red
     Red = 0xFF0000,
     //% block=orange
@@ -517,5 +525,46 @@ namespace INNOBITExpansion {
     }
 
 
+    ///////////////////// 热释电模块 ///////////////////////
+    //% help=pins/digital-read-pin weight=30
+    //% blockId=MP_device_get_digital_pin block="read PIR sensor" blockGap=8
+    //% subcategory="SPIR sensor"
+    export function create_digitalReadPin():number {
+        return pins.digitalReadPin(DigitalPin.P1);
+    }
+    //% help=pins/digital-write-pin weight=29
+    //% blockId=MP_device_set_digital_pin block="digital write|pin|to %value"
+    //% value.min=0 value.max=1
+    //% subcategory="SPIR sensor"
+    export function create_digitalWritePin(value:number):void {
+        return pins.digitalWritePin(DigitalPin.P1, value);
+    }
+    /////////////////////超声波测距模块 ///////////////////////
     
+    export function ping(trig: DigitalPin, echo: DigitalPin, unit: YFPingUnit, maxCmDistance = 450): number {
+        // send pulse
+        pins.setPull(trig, PinPullMode.PullNone);
+        pins.digitalWritePin(trig, 0);
+        control.waitMicros(10);
+        pins.digitalWritePin(trig, 1);
+        control.waitMicros(50);
+        pins.digitalWritePin(trig, 0);
+
+        // read pulse
+        const d = pins.pulseIn(echo, PulseValue.High, maxCmDistance * 58);
+
+        switch (unit) {
+            case YFPingUnit.Centimeters: return Math.idiv(d, 58);
+            case YFPingUnit.Inches: return Math.idiv(d, 148);
+            default: return d;
+        }
+    }
+    //% blockId=MP_YFSENSORS_sonar_ping weight=79 blockGap=15
+    //% block="Ultrasonic sensor – distance in cm"
+    //% subcategory="Sonar Sensors"
+    export function create_ping(){
+        return ping(DigitalPin.P8,DigitalPin.P0,YFPingUnit.Centimeters)
+    }
+  
+
 }
